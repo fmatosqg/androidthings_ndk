@@ -17,6 +17,10 @@ public class NativeHelper {
 
     }
 
+//    public String stringFromJNI() {
+//        return "java code";
+//    }
+
 
     public native String stringFromJNI();
 }

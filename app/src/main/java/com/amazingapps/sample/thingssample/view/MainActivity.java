@@ -5,9 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.amazingapps.sample.thingssample.R;
+import com.amazingapps.sample.thingssample.controller.ServoController;
 import com.amazingapps.sample.thingssample.ndk.NativeHelper;
+import com.google.android.things.pio.PeripheralManagerService;
 
 public class MainActivity extends AppCompatActivity {
+    private ServoController servoController;
 
     // Used to load the 'native-lib' library on application startup.
 
@@ -22,6 +25,27 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(helper.stringFromJNI());
 
+        PeripheralManagerService service = new PeripheralManagerService();
+
+        servoController = new ServoController(ServoController.getPwm0Pin(),20.0,2.0,1.0);
+
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        Thread.sleep(1000);
+                        servoController.setPosition(20);
+                        Thread.sleep(1000);
+                        servoController.setPosition(170);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        th.start();
 
     }
 
