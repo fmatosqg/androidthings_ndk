@@ -1,5 +1,6 @@
 package com.amazingapps.sample.thingssample.ndk;
 
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -13,13 +14,16 @@ public class NativeHelper {
     public NativeHelper() {
         System.loadLibrary("native-lib");
 
+//        System.loadLibrary("peripheralman");
+        System.loadLibrary("androidthings_jni");
         Log.i(TAG,"Call native = " + stringFromJNI());
 
     }
 
 //    public String stringFromJNI() {
 //        return "java code";
-//    }
+//    }it st
+
 
 
     public native String stringFromJNI();
