@@ -72,7 +72,7 @@ GPIODirection(int pin, int dir) {
     snprintf(path, DIRECTION_MAX, "/sys/class/gpio/gpio%d/direction", pin);
     fd = open(path, O_WRONLY);
     if (-1 == fd) {
-        LOGE("Failed to open gpio direction for writing!\n");
+        LOGE("Failed to open gpio direction for writing! %s\n",path);
         return (-1);
     }
 

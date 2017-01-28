@@ -1,12 +1,17 @@
 #!/bin/bash
-# upload to android and run as
-# source listener.sh
+# upload to android and run as root
+
 
 path=/storage/emulated/0/tmp
-#path=/data/data/com.amazingapps.sample.thingssample
-pipe=/data/data/com.amazingapps.sample.thingssample/testpipe
+path=/data/data/com.amazingapps.sample.thingssample
+pipe=$path/gpio_export_pipe
 
-gpioPath=/sys/class/gpio/
+gpioPath=/sys/class/gpio
+
+if ! [ -d $path ]
+then
+    mkdir -p "$path"
+fi
 
 trap "rm -f $pipe" EXIT
 
@@ -14,20 +19,24 @@ if [[ ! -p $pipe ]]; then
     mknod $pipe p
 fi
 
-echo "Created pipe on $pipe"
+chmod 777 $pipe
+
+echo "Created pipe on $pipe, running as $(whoami)"
 
 function configurePin () {
     pin=$1
 
-    echo "Got pin $pin"
+    echo "Got pin $pin, running as $(whoami)"
 
-    #su root chmod a+w "$gpioPath/export"
-    #su root chmod a+w "$gpioPath/unexport"
+    chmod a+w "$gpioPath/export"
+    chmod a+w "$gpioPath/unexport"
 
     echo $pin > "$gpioPath/export"
     chmod a+w "$gpioPath/gpio${pin}/direction"
-    su root chmod a+w "$gpioPath/gpio${pin}/direction"
-    su root chmod a+w "$gpioPath/gpio${pin}/value"
+
+    chmod a+w "$gpioPath/gpio${pin}/direction"
+    #su root
+    chmod a+w "$gpioPath/gpio${pin}/value"
 
 }
 
