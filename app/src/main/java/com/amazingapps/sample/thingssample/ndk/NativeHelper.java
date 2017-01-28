@@ -13,24 +13,33 @@ public class NativeHelper {
 
     public NativeHelper() {
         System.loadLibrary("sample");
-        Log.i(TAG,"Call native = " + stringFromJNI());
+        Log.i(TAG, "Call native = " + stringFromJNI());
 
 
+        Log.i(TAG, "Open pin " + exportPin());
 
-        Log.i(TAG,"Open pin " +  exportPin());
 
+        doAllJava(10);
+        doAllJava(10000);
+        doAllJava(100000);
 
+    }
+
+    private void doAllJava(int count) {
         long start = System.nanoTime();
-
-        Log.i(TAG,"do all " +  doAll(0,0,0));
-
+        boolean isSuccess = doAll(23, count, 0);
         long end = System.nanoTime();
 
-        float elapsedMs = (end-start);
-        elapsedMs /= 1000.0f;
-        elapsedMs /= 1000.0f;
+        if (isSuccess ) {
+            float elapsedMs = (end - start);
+            elapsedMs /= 1000.0f;
+            elapsedMs /= 1000.0f;
 
-        Log.i(TAG,"Iterations done in " + elapsedMs);
+            float kHz = (float) count / elapsedMs;
+            Log.i(TAG, count + " Iterations done in " + elapsedMs + " ms = " + kHz + " kHz");
+        } else {
+            Log.i(TAG, "do all FAILED! " + isSuccess);
+        }
 
     }
 
@@ -38,5 +47,5 @@ public class NativeHelper {
 
     public native boolean exportPin();
 
-    public native boolean doAll(int pin,int count, int sleeMs);
+    public native boolean doAll(int pin, int count, int sleeMs);
 }

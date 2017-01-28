@@ -32,7 +32,7 @@ GPIOExport(int pin) {
 
     fd = open("/sys/class/gpio/export", O_WRONLY); // creates dev /sys/class/gpio/gpio23/
     if (-1 == fd) {
-        LOGE("Failed to open export for writing!\n");
+        LOGE("Failed to open /sys/class/gpio/export for writing!\n");
         return (-1);
     }
 
@@ -50,7 +50,7 @@ GPIOUnexport(int pin) {
 
     fd = open("/sys/class/gpio/unexport", O_WRONLY);
     if (-1 == fd) {
-        LOGE("Failed to open unexport for writing!\n");
+        LOGE("Failed to open /sys/class/gpio/unexport for writing!\n");
         return (-1);
     }
 
@@ -67,6 +67,7 @@ GPIODirection(int pin, int dir) {
 #define DIRECTION_MAX 35
     char path[DIRECTION_MAX];
     int fd;
+    char out[] = {"out\n"};
 
     snprintf(path, DIRECTION_MAX, "/sys/class/gpio/gpio%d/direction", pin);
     fd = open(path, O_WRONLY);
@@ -75,7 +76,8 @@ GPIODirection(int pin, int dir) {
         return (-1);
     }
 
-    if (-1 == write(fd, &s_directions_str[IN == dir ? 0 : 3], IN == dir ? 2 : 3)) {
+
+    if (-1 == write(fd, out, 4)) {
         LOGE("Failed to set direction!\n");
         return (-1);
     }

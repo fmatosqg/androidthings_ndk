@@ -2,6 +2,8 @@
 #include <stdio.h>
 
 #include "native-sysfs.cpp"
+#include "native-sysfs-listener-client.cpp"
+
 
 extern "C" jboolean
 Java_com_amazingapps_sample_thingssample_ndk_NativeHelper_exportPin(JNIEnv *env, jobject instance) {
@@ -19,23 +21,48 @@ Java_com_amazingapps_sample_thingssample_ndk_NativeHelper_exportPin(JNIEnv *env,
     }
 }
 
+int openPin(int pinNumber) {
+
+    if (giveWritePermission(pinNumber)) {
+        return GPIOExport(pinNumber);
+    }
+    else {
+        LOGE("Listener client failed giving permissions to pin %d",pinNumber);
+        return -1;
+    }
+
+}
+
 extern "C" jboolean
 Java_com_amazingapps_sample_thingssample_ndk_NativeHelper_doAll(JNIEnv *env, jobject instance,
-                                                                jint pinnnn, jint count,
+                                                                jint pinNumber, jint count,
                                                                 jint sleeMs) {
 
-    int pinNumber = 24;
 
-    int r = GPIOExport(pinNumber);
+    int rOpen = openPin(pinNumber);
 
-    GPIODirection(pinNumber, OUT);
+    if (rOpen == 0) {
+        int rDirection = GPIODirection(pinNumber, OUT);
 
-//    for ( int i = 0; i < count ; i++) {
-//        GPIOWrite(pinNumber,1);
-////        usleep(500 * 1000);
-//        GPIOWrite(pinNumber,0);
-////        usleep(500 * 1000);
-//    }
+        if (rDirection == 0) {
 
-//    GPIOUnexport(pinNumber);
+            int rWrite = GPIOWrite(pinNumber, 1);
+
+            if (rWrite == 0) {
+
+                for (int i = 0; i < count; i++) {
+                    GPIOWrite(pinNumber, 1);
+//        usleep(500 * 1000);
+                    GPIOWrite(pinNumber, 0);
+//        usleep(500 * 1000);
+                }
+
+                return true;
+            }
+        }
+    }
+
+    GPIOUnexport(pinNumber);
+
+    return false;
 }

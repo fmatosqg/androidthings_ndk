@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 
 android {
@@ -40,5 +42,24 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     provided 'com.google.android.things:androidthings:0.1-devpreview'
 
+}
+
+def buildTime() {
+    def df = new SimpleDateFormat("yyyy-MM-dd")
+    return df.format(new Date())
+}
+
+android.applicationVariants.all { variant ->
+
+    variant.outputs.each { output ->
+        def apk = output.outputFile;
+        def buildNumber = versionCode
+        def newName = "thingssample" + "-" + versionName + "-" + buildNumber + "-" + buildTime() + ".apk";
+        output.outputFile = new File(apk.parentFile, newName);
+    }
+
+    variant.assemble.doLast {
+        println("File is ready: " + variant.outputs[0].outputFile)
+    }
 
 }
