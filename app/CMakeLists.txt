@@ -46,3 +46,10 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
+
+
+#########################
+# Standalone executable
+# (will show in /app/.externalNativeBuild/cmake/debug/<abi>/mycommand)
+add_executable(xxxxx
+               src/main/cpp/executable/main.cpp )

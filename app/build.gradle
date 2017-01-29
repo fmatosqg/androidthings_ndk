@@ -2,6 +2,7 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
 
+def executableName="xxxxx"
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -14,12 +15,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
+                targets executableName
                 cppFlags "-frtti -fexceptions"
+                //abiFilters "armeabi", "armeabi-v7a"
             }
-        }
-
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a"
         }
     }
 
@@ -59,7 +58,10 @@ android.applicationVariants.all { variant ->
     }
 
     variant.assemble.doLast {
-        println("File is ready: " + variant.outputs[0].outputFile)
+        com.android.build.gradle.internal.api.ApkVariantOutputImpl output = variant.outputs[0]
+
+        println("Apk is ready: " + output.outputFile)
+        println("Executable binaries are in " + "./app/.externalNativeBuild/cmake/debug/<architecture>/$executableName")
     }
 
 }
