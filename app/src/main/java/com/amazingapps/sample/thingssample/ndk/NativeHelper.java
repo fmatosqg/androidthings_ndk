@@ -22,6 +22,7 @@ public class NativeHelper {
         doAllJava(10000);
         doAllJava(100000);
         doAllJava(1000000);
+        doAllJava(2000000);
 
     }
 
