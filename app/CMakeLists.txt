@@ -51,5 +51,5 @@ target_link_libraries( # Specifies the target library.
 #########################
 # Standalone executable
 # (will show in /app/.externalNativeBuild/cmake/debug/<abi>/mycommand)
-add_executable(xxxxx
+add_executable(samplebinary
                src/main/cpp/executable/main.cpp )

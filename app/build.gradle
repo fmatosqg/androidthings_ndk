@@ -2,7 +2,8 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
 
-def executableName="xxxxx"
+def executableName="samplebinary"
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
