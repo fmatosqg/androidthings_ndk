@@ -18,9 +18,10 @@ public class NativeHelper {
 
         Log.i(TAG, "Open pin " + exportPin());
 
-        doAllJava(10);
+        doAllJava(1);
         doAllJava(10000);
         doAllJava(100000);
+        doAllJava(1000000);
 
     }
 

@@ -27,7 +27,7 @@ int openPin(int pinNumber) {
         return GPIOExport(pinNumber);
     }
     else {
-        LOGE("Listener client failed giving permissions to pin %d",pinNumber);
+        LOGE("Listener client failed giving permissions to pin %d", pinNumber);
         return -1;
     }
 
@@ -39,6 +39,8 @@ Java_com_amazingapps_sample_thingssample_ndk_NativeHelper_doAll(JNIEnv *env, job
                                                                 jint sleeMs) {
 
 
+    int isSuccess = false;
+
     int rOpen = openPin(pinNumber);
 
     if (rOpen == 0) {
@@ -46,23 +48,36 @@ Java_com_amazingapps_sample_thingssample_ndk_NativeHelper_doAll(JNIEnv *env, job
 
         if (rDirection == 0) {
 
-            int rWrite = GPIOWrite(pinNumber, 1);
+            int fd = GPIOOpenFd(pinNumber);
 
-            if (rWrite == 0) {
+            if (fd != -1) {
 
                 for (int i = 0; i < count; i++) {
-                    GPIOWrite(pinNumber, 1);
-//        usleep(500 * 1000);
-                    GPIOWrite(pinNumber, 0);
-//        usleep(500 * 1000);
+                    GPIOWriteFd(fd, LOW);
+                    GPIOWriteFd(fd, HIGH);
                 }
 
-                return true;
+                GPIOCloseFd(fd);
+                isSuccess = true;
             }
+
+//            int rWrite = GPIOWrite(pinNumber, 1);
+//
+//            if (rWrite == 0) {
+//
+//                for (int i = 0; i < count; i++) {
+//                    GPIOWrite(pinNumber, 1);
+////        usleep(500 * 1000);
+//                    GPIOWrite(pinNumber, 0);
+////        usleep(500 * 1000);
+//                }
+//
+//                return true;
+//            }
         }
     }
 
     GPIOUnexport(pinNumber);
 
-    return false;
+    return isSuccess;
 }

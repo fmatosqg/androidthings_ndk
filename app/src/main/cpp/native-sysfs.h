@@ -20,14 +20,17 @@
 
 
 int GPIOExport(int pin);
-
 int GPIOUnexport(int pin);
 
 int GPIODirection(int pin, int dir);
-
 int GPIORead(int pin);
-
 int GPIOWrite(int pin, int value);
+
+
+// fine grain functions
+int GPIOOpenFd(int pin);
+int GPIOCloseFd(int fd);
+int GPIOWriteFd(int fd, int value);
 
 
 #endif //THINGSSAMPLE_NATIVE_SYSFS_H

@@ -97,7 +97,8 @@ int GPIORead(int pin) {
     return (atoi(value_str));
 }
 
-int GPIOWrite(int pin, int value) {
+int GPIOWriteeee(int pin, int value) {
+
     static const char s_values_str[] = "01";
 
     char path[VALUE_MAX];
@@ -120,3 +121,46 @@ int GPIOWrite(int pin, int value) {
 }
 
 
+int GPIOOpenFd(int pin) {
+    char path[VALUE_MAX];
+    int fd;
+
+    snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
+    fd = open(path, O_WRONLY);
+    if (-1 == fd) {
+        LOGE("Failed to open gpio value for writing!\n");
+        return (-1);
+    }
+
+    return fd;
+}
+
+int GPIOCloseFd(int fd) {
+    return close(fd);
+}
+
+int GPIOWriteFd(int fd, int value) {
+    static const char s_values_str[] = "01";
+
+    if (1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1)) {
+        LOGE("Failed to write value!\n");
+        return (-1);
+    }
+
+    return (0);
+}
+
+
+int GPIOWrite(int pin, int value) {
+
+    int fd = GPIOOpenFd(pin);
+
+    if ( fd != -1 ) {
+        GPIOWriteFd(fd,value);
+        GPIOCloseFd(fd);
+
+        return 0;
+    }
+
+    return -1;
+}

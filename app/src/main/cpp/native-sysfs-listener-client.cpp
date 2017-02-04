@@ -13,7 +13,7 @@
  */
 bool giveWritePermission(int pinNumber) {
 
-    char *myfifo = "/data/data/com.amazingapps.sample.thingssample/gpio_export_pipe";
+    char myfifo[] = "/data/data/com.amazingapps.sample.thingssample/gpio_export_pipe";
     int fd = open(myfifo, O_WRONLY);
     char buffer[10];
 
