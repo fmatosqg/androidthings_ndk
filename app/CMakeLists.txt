@@ -21,6 +21,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/native-lib.cpp
              src/main/cpp/native-sysfs.cpp
              src/main/cpp/native-sysfs-glue.cpp
+             src/main/cpp/native-sysfs-listener-client.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

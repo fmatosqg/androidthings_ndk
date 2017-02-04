@@ -1,7 +1,5 @@
-#include <jni.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <android/log.h>"
+
+#include "native-sysfs-listener-client.h"
 
 #define  LOG_TAG    "Native sysfs"
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)

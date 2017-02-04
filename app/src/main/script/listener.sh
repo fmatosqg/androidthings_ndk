@@ -32,10 +32,9 @@ function configurePin () {
     chmod a+w "$gpioPath/unexport"
 
     echo $pin > "$gpioPath/export"
-    chmod a+w "$gpioPath/gpio${pin}/direction"
 
     chmod a+w "$gpioPath/gpio${pin}/direction"
-    #su root
+    chmod a+w "$gpioPath/gpio${pin}/direction"
     chmod a+w "$gpioPath/gpio${pin}/value"
 
 }

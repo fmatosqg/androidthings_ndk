@@ -1,8 +1,8 @@
 #include <jni.h>
 #include <stdio.h>
 
-#include "native-sysfs.cpp"
-#include "native-sysfs-listener-client.cpp"
+#include "native-sysfs.h"
+#include "native-sysfs-listener-client.h"
 
 
 extern "C" jboolean

@@ -2,7 +2,7 @@
 // Created by Fabio on 27/01/2017.
 //
 
-//http://elinux.org/RPi_GPIO_Code_Samples
+//Based on http://elinux.org/RPi_GPIO_Code_Samples
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -12,19 +12,9 @@
 #include <unistd.h>
 #include <android/log.h>
 
-#define IN  0
-#define OUT 1
+#include "native-sysfs.h"
 
-#define LOW  0
-#define HIGH 1
-
-#define  LOG_TAG    "Native sysfs"
-
-#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-
-static int
-GPIOExport(int pin) {
+int GPIOExport(int pin) {
 #define BUFFER_MAX 3
     char buffer[BUFFER_MAX];
     ssize_t bytes_written;
@@ -42,8 +32,7 @@ GPIOExport(int pin) {
     return (0);
 }
 
-static int
-GPIOUnexport(int pin) {
+int GPIOUnexport(int pin) {
     char buffer[BUFFER_MAX];
     ssize_t bytes_written;
     int fd;
@@ -60,8 +49,7 @@ GPIOUnexport(int pin) {
     return (0);
 }
 
-static int
-GPIODirection(int pin, int dir) {
+int GPIODirection(int pin, int dir) {
     static const char s_directions_str[] = "in\0out";
 
 #define DIRECTION_MAX 35
@@ -72,7 +60,7 @@ GPIODirection(int pin, int dir) {
     snprintf(path, DIRECTION_MAX, "/sys/class/gpio/gpio%d/direction", pin);
     fd = open(path, O_WRONLY);
     if (-1 == fd) {
-        LOGE("Failed to open gpio direction for writing! %s\n",path);
+        LOGE("Failed to open gpio direction for writing! %s\n", path);
         return (-1);
     }
 
@@ -86,8 +74,7 @@ GPIODirection(int pin, int dir) {
     return (0);
 }
 
-static int
-GPIORead(int pin) {
+int GPIORead(int pin) {
 #define VALUE_MAX 30
     char path[VALUE_MAX];
     char value_str[3];
@@ -110,8 +97,7 @@ GPIORead(int pin) {
     return (atoi(value_str));
 }
 
-static int
-GPIOWrite(int pin, int value) {
+int GPIOWrite(int pin, int value) {
     static const char s_values_str[] = "01";
 
     char path[VALUE_MAX];
