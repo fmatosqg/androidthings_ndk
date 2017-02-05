@@ -5,32 +5,15 @@
 //Based on http://elinux.org/RPi_GPIO_Code_Samples
 
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <android/log.h>
 
 #include "native-sysfs.h"
+#include "native-sysfs-listener-client.h"
 
-int GPIOExport(int pin) {
 #define BUFFER_MAX 3
-    char buffer[BUFFER_MAX];
-    ssize_t bytes_written;
-    int fd;
-
-    fd = open("/sys/class/gpio/export", O_WRONLY); // creates dev /sys/class/gpio/gpio23/
-    if (-1 == fd) {
-        LOGE("Failed to open /sys/class/gpio/export for writing!\n");
-        return (-1);
-    }
-
-    bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
-    write(fd, buffer, bytes_written);
-    close(fd);
-    return (0);
-}
 
 int GPIOUnexport(int pin) {
     char buffer[BUFFER_MAX];
@@ -49,8 +32,10 @@ int GPIOUnexport(int pin) {
     return (0);
 }
 
-int GPIODirection(int pin, int dir) {
-    static const char s_directions_str[] = "in\0out";
+/**
+ * Returns true if successfull, false otherwise
+ */
+bool GPIODirection(int pin, int dir) {
 
 #define DIRECTION_MAX 35
     char path[DIRECTION_MAX];
@@ -61,17 +46,17 @@ int GPIODirection(int pin, int dir) {
     fd = open(path, O_WRONLY);
     if (-1 == fd) {
         LOGE("Failed to open gpio direction for writing! %s\n", path);
-        return (-1);
+        return false;
     }
 
 
     if (-1 == write(fd, out, 4)) {
         LOGE("Failed to set direction!\n");
-        return (-1);
+        return false;
     }
 
     close(fd);
-    return (0);
+    return true;
 }
 
 int GPIORead(int pin) {
@@ -97,33 +82,9 @@ int GPIORead(int pin) {
     return (atoi(value_str));
 }
 
-int GPIOWriteeee(int pin, int value) {
-
-    static const char s_values_str[] = "01";
-
-    char path[VALUE_MAX];
-    int fd;
-
-    snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
-    fd = open(path, O_WRONLY);
-    if (-1 == fd) {
-        LOGE("Failed to open gpio value for writing!\n");
-        return (-1);
-    }
-
-    if (1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1)) {
-        LOGE("Failed to write value!\n");
-        return (-1);
-    }
-
-    close(fd);
-    return (0);
-}
-
-
 int GPIOOpenFd(int pin) {
     char path[VALUE_MAX];
-    int fd;
+    int fd = 0;
 
     snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
     fd = open(path, O_WRONLY);
@@ -135,32 +96,62 @@ int GPIOOpenFd(int pin) {
     return fd;
 }
 
-int GPIOCloseFd(int fd) {
-    return close(fd);
+int GPIOCloseFd(int pin, int fd) {
+    GPIOUnexport(pin);
+
+    if (fd > 0) {
+        return close(fd);
+    } else {
+        return -1;
+    }
 }
 
-int GPIOWriteFd(int fd, int value) {
+/**
+ * Returns true if ok
+ */
+bool GPIOWriteFd(int fd, int value) {
     static const char s_values_str[] = "01";
 
     if (1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1)) {
         LOGE("Failed to write value!\n");
-        return (-1);
+        return false;
     }
 
-    return (0);
+    return true;
 }
 
+/**
+ * Returns fd if successfull, value < 0 if any problem is found
+ */
 
-int GPIOWrite(int pin, int value) {
+#define ERROR_UNNKNOWN -1
+#define ERROR_EXPORT -2
+#define ERROR_DIRECTION -3
+#define ERROR_GET_FD -4
+#define ERROR_WRITE -5
+#define ERROR_READ -6
 
-    int fd = GPIOOpenFd(pin);
+int GPIOOpenFd(int pin, int dir) {
 
-    if ( fd != -1 ) {
-        GPIOWriteFd(fd,value);
-        GPIOCloseFd(fd);
+    int returnValue = ERROR_UNNKNOWN;
+    int fd = 0;
 
-        return 0;
+    if (giveWritePermission(pin)) {
+
+        if (GPIODirection(pin, OUT)) {
+            fd = GPIOOpenFd(pin);
+
+            returnValue = fd;
+            if (fd == -1) {
+                returnValue = ERROR_GET_FD;
+            }
+        } else {
+            returnValue = ERROR_DIRECTION;
+        }
+    } else {
+        returnValue = ERROR_EXPORT;
     }
 
-    return -1;
+    return returnValue;
+
 }

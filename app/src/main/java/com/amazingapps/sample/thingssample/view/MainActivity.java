@@ -19,15 +19,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        servoController = new ServoController(ServoController.getPwm0Pin(),20.0,2.0,1.0);
+
         NativeHelper helper = new NativeHelper();
 
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(helper.stringFromJNI());
-
-        PeripheralManagerService service = new PeripheralManagerService();
-
-        servoController = new ServoController(ServoController.getPwm0Pin(),20.0,2.0,1.0);
 
         Thread th = new Thread(new Runnable() {
             @Override

@@ -19,18 +19,21 @@
 #define HIGH 1
 
 
-int GPIOExport(int pin);
-int GPIOUnexport(int pin);
+//bool GPIODirection(int pin, int dir);
 
-int GPIODirection(int pin, int dir);
-int GPIORead(int pin);
-int GPIOWrite(int pin, int value);
+//int GPIORead(int pin);
+
+//int GPIOWrite(int pin, int value);
 
 
 // fine grain functions
-int GPIOOpenFd(int pin);
-int GPIOCloseFd(int fd);
-int GPIOWriteFd(int fd, int value);
+//int GPIOOpenFd(int pin);
+
+int GPIOOpenFd(int pin, int dir);
+
+int GPIOCloseFd(int pin, int fd);
+
+bool GPIOWriteFd(int fd, int value);
 
 
 #endif //THINGSSAMPLE_NATIVE_SYSFS_H

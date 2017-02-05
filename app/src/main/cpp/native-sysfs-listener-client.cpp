@@ -1,4 +1,3 @@
-
 #include "native-sysfs-listener-client.h"
 
 #define  LOG_TAG    "Native sysfs"
@@ -17,22 +16,23 @@ bool giveWritePermission(int pinNumber) {
     int fd = open(myfifo, O_WRONLY);
     char buffer[10];
 
-    sprintf(buffer,"%d\n",pinNumber);
+    sprintf(buffer, "%d\n", pinNumber);
 
-    if ( fd != -1 ) {
+    if (fd != -1) {
 
-        int rWrite = write(fd,buffer,strlen(buffer));
+        int rWrite = write(fd, buffer, strlen(buffer));
         int rClose = close(fd);
 
         int sleepMs = 500;
 
-        LOGE("Successfully open at pin %s, now sleep for %d ms until operation completes",buffer,sleepMs);
+        LOGE("Successfully open at pin %s, now sleep for %d ms until operation completes", buffer,
+             sleepMs);
 
-        usleep(sleepMs*1000);
+        usleep(sleepMs * 1000);
         return true;
     }
 
-    LOGE("Failed writing at %s",myfifo);
+    LOGE("Failed writing at %s", myfifo);
 
     return false;
 }

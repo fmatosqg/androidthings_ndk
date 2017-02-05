@@ -19,3 +19,5 @@ While your program is running you'll see some text on the terminal every time a 
  and check that  gpio23 folder exists, and both direction and value have read and write permissions for all users (you should see `-rw-rw-rw` next to it).
 
 
+# Stack Overflow related questions
+http://stackoverflow.com/questions/41727580/what-is-android-things-raspberry-pi-gpio-max-frequency/42036540#42036540
