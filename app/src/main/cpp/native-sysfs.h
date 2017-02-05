@@ -12,28 +12,25 @@
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 
-#define IN  0
-#define OUT 1
+#define DIRECTION_IN  0
+#define DIRECTION_OUT 1
 
-#define LOW  0
-#define HIGH 1
+#define WRITE_HIGH 1
+#define WRITE_LOW 0
 
-
-//bool GPIODirection(int pin, int dir);
-
-//int GPIORead(int pin);
-
-//int GPIOWrite(int pin, int value);
+#define EDGE_RISING "rising"
+#define EDGE_BOTH "both"
+#define EDGE_FALLING "falling"
 
 
 // fine grain functions
-//int GPIOOpenFd(int pin);
-
 int GPIOOpenFd(int pin, int dir);
 
 int GPIOCloseFd(int pin, int fd);
 
 bool GPIOWriteFd(int fd, int value);
 
+int GPIOReadFd(int fd);
+int GPIOSetEdge(unsigned int gpio, char *edge);
 
 #endif //THINGSSAMPLE_NATIVE_SYSFS_H

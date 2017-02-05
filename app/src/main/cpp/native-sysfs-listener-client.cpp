@@ -24,11 +24,12 @@ bool giveWritePermission(int pinNumber) {
         int rClose = close(fd);
 
         int sleepMs = 500;
+        usleep(sleepMs * 1000);
 
-        LOGE("Successfully open at pin %s, now sleep for %d ms until operation completes", buffer,
+        LOGE("Open pin %d, sleep %d ms", pinNumber,
              sleepMs);
 
-        usleep(sleepMs * 1000);
+
         return true;
     }
 
