@@ -21,3 +21,6 @@ While your program is running you'll see some text on the terminal every time a 
 
 # Stack Overflow related questions
 http://stackoverflow.com/questions/41727580/what-is-android-things-raspberry-pi-gpio-max-frequency/42036540#42036540
+
+# Credit
+Includes BCM2835 library from http://www.airspayce.com/mikem/bcm2835/
