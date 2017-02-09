@@ -17,6 +17,30 @@ void nsleep(int nanoseconds) {
     nanosleep(&ts, NULL);
 }
 
+timespec timeStart;
+timespec timeEnd;
+
+// marks the start of event
+void tic() {
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &timeStart);
+}
+
+// marks the end of event
+void toc(char *msg) {
+
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &timeEnd);
+
+    long elapsedSec = timeEnd.tv_sec - timeStart.tv_sec;
+    long elapsedNs = timeEnd.tv_nsec - timeStart.tv_nsec;
+    elapsedNs += elapsedSec * 1000 * 1000 * 1000;
+
+    LOGE(msg, elapsedNs);
+
+    float kHz = 1000.0f*1000.0f/(float)elapsedNs;
+    LOGE("Equivalent to %3.2f kHz",kHz);
+}
+
+
 /* this function is run by the second thread */
 void *writeThread(void *pin) {
 
@@ -32,8 +56,10 @@ void *writeThread(void *pin) {
     while (true) {
 
         GPIOWriteFd(fd, WRITE_HIGH);
+        tic();
         nsleep(500 * 1000 * 1000);
         GPIOWriteFd(fd, WRITE_LOW);
+        tic();
         nsleep(500 * 1000 * 1000);
 
         LOGD("W %d", writePin);
@@ -70,7 +96,9 @@ void *readThread(void *pin) {
     GPIOSetEdge(readPin, EDGE_BOTH);
 
     int timeout = 3 * 1000;
+    timeout = 1000;
 
+    int failedReads = 0;
     while (true) {
 
         fdset[0].fd = gpio_fd;
@@ -84,17 +112,18 @@ void *readThread(void *pin) {
         }
 
         if (rc == 0) {
-            LOGE(".");
+//            LOGE(".");
+            failedReads++;
         }
 
         if (fdset[0].revents & POLLPRI) {
             lseek(fdset[0].fd, 0, SEEK_SET);
             int len = read(fdset[0].fd, buf, MAX_BUF);
-            LOGE("poll() GPIO %d interrupt occurred, got value %s", readPin, buf);
+            toc("Elapsed time was %d nanoseconds");
+
+            LOGD("Read pin %d value %s after %d tries", readPin, buf, failedReads);
+            failedReads = 0;
         }
-
-        LOGD("R %d", readPin);
-
     }
 
     GPIOCloseFd(readPin, fd);
@@ -108,6 +137,9 @@ int startWritingThread(int pinNumberOut) {
 
     int *pin = new int;
     *pin = pinNumberOut;
+
+    tic();
+    toc("Benchmark tic toc = %d");
 
     LOGE("Write thread sample on pin %d", pinNumberOut);
 
