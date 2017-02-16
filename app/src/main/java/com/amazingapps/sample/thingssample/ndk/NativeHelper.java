@@ -1,6 +1,5 @@
 package com.amazingapps.sample.thingssample.ndk;
 
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
@@ -19,9 +18,7 @@ public class NativeHelper {
 
     public NativeHelper() {
         System.loadLibrary("sample");
-
-       // runBenchmarks();
-
+        Log.i(TAG,"NDK library loaded");
     }
 
     private void runBenchmarks() {
@@ -142,5 +139,6 @@ public class NativeHelper {
 
     public native boolean exportPin();
 
+    public native float sr04Distance(int triggerPin, int echoPin);
 
 }

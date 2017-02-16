@@ -23,6 +23,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/native-sysfs-benchmark.cpp
              src/main/cpp/native-sysfs-listener-client.cpp
              src/main/cpp/native-sysfs-asynchronous.cpp
+             src/main/cpp/native_sr04.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

@@ -7,33 +7,44 @@ import android.widget.TextView;
 
 import com.amazingapps.sample.thingssample.R;
 import com.amazingapps.sample.thingssample.controller.ServoController;
+import com.amazingapps.sample.thingssample.domain.Quack;
+import com.amazingapps.sample.thingssample.domain.voice.VoiceSpeakerService;
 import com.amazingapps.sample.thingssample.ndk.NativeHelper;
+import com.amazingapps.sample.thingssample.sensor.DistanceSensor;
 import com.google.android.things.pio.PeripheralManagerService;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private ServoController servoController;
 
-    // Used to load the 'native-lib' library on application startup.
+    private DistanceSensor distanceSensor;
+    private Quack quack;
+    private VoiceSpeakerService voiceSpeakerService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-/*
-        servoController = new ServoController(ServoController.getPwm0Pin(),20.0,2.0,1.0);
 
+        distanceSensor = new DistanceSensor(17, 27);
 
-        Thread th = new Thread(new Runnable() {
+        voiceSpeakerService = new VoiceSpeakerService(this);
+        quack = new Quack(voiceSpeakerService);
+        readDistance();
+    }
+
+    private void readDistance() {
+
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+
+                while (true) {
                     try {
                         Thread.sleep(1000);
-                        servoController.setPosition(20);
-                        Thread.sleep(1000);
-                        servoController.setPosition(170);
+                        Float distance = distanceSensor.getDistance();
+
+                        quack.setDistance(distance);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -41,17 +52,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        th.start();
-*/
-        NativeHelper helper = new NativeHelper();
-        helper.benchmarkLoopback(6,5);
 
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(helper.stringFromJNI());
-
-        Log.i(TAG,"Activity is created");
-
+        thread.start();
     }
 
 }
