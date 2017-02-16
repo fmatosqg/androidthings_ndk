@@ -38,7 +38,7 @@ public class DistanceSensorNdk extends DistanceSensor {
 
     }
 
-    public Float getDistance() {
+    public double getDistance() {
 
         return nativeHelper.sr04Distance(triggerPin, echoPin);
     }

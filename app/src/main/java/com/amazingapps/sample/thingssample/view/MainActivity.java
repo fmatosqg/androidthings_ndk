@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
                 while (true) {
                     try {
-                        Thread.sleep(1000);
-                        Float distance = distanceSensor.getDistance();
+                        Thread.sleep(300);
+                        double distance = distanceSensor.getDistance();
 
                         quack.setDistance(distance);
                     } catch (InterruptedException e) {

@@ -28,7 +28,7 @@ public class DistanceSensor {
 
     private boolean isInitialized = false;
 
-    private Float distanceCm;
+    private double distanceCm;
     private Handler looperHandler;
 
     public DistanceSensor(int triggerPin, int echoPin) {
@@ -115,9 +115,9 @@ public class DistanceSensor {
                         timeEnd = System.nanoTime();
 
                         long elapsed = timeEnd - timeStart;
-                        double elapsedSec = (float) elapsed / 1000.0 * 1000.0 * 1000.0;
+                        double elapsedSec = (float) elapsed / (1000.0 * 1000.0 * 1000.0);
 
-                        double distanceCm = elapsedSec * 340.0 / 2.0 * 100.0;
+                        distanceCm = elapsedSec * 340.0 / 2.0 * 100.0;
                         Log.i(TAG, "Elapsed " + elapsed + " ns / " + distanceCm + " cm");
                     } else {
                         timeStart = System.nanoTime();
@@ -137,7 +137,7 @@ public class DistanceSensor {
     }
 
 
-    public Float getDistance() {
+    public double getDistance() {
 
         if (!isInitialized) {
             setup();
