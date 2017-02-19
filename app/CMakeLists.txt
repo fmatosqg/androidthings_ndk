@@ -56,7 +56,22 @@ target_link_libraries( # Specifies the target library.
 include_directories(src/main/cpp/bcm2835/)
 
 
-add_executable(bcm2835test
+add_executable(bcm2835_test
                src/main/cpp/bcm2835/test.c
+                src/main/cpp/bcm2835/bcm2835.c
+               )
+
+add_executable(bcm2835_input
+               src/main/cpp/bcm2835/examples/input.c
+                src/main/cpp/bcm2835/bcm2835.c
+               )
+
+add_executable(bcm2835_event
+               src/main/cpp/bcm2835/examples/event.c
+                src/main/cpp/bcm2835/bcm2835.c
+               )
+
+add_executable(bcm2835_blink
+               src/main/cpp/bcm2835/examples/blink.c
                 src/main/cpp/bcm2835/bcm2835.c
                )

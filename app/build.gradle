@@ -2,8 +2,6 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
 
-def executableName="bcm2835test"
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -16,7 +14,11 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                targets executableName
+                targets 'bcm2835_test'
+                targets 'bcm2835_input'
+                targets 'bcm2835_event'
+                targets 'bcm2835_blink'
+
                 cppFlags "-frtti -fexceptions"
             }
         }
